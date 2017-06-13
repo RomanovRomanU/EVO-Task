@@ -38,6 +38,8 @@ def optimize_data(template, data):
         single_template_new_data = {}
         # Which data we need in this template
         target_keys = single_template[1]
+        if target_keys is None:
+            continue
         # Processing string to distinct names keys
         target_keys = target_keys.split('[')
         # Renmoving "[" from every splitted string

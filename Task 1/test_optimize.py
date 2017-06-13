@@ -91,5 +91,10 @@ def test_objects():
 
     assert new_data == {
         # We don't strip attributes from the objects, so rectangle is full
-        'small_rect': Rectagle(1, 2),
+        'small_rect': Rectangle(1, 2),
     }
+
+
+if __name__ == '__main__':
+    test_languages_simple()
+    test_languages_two_keys()
