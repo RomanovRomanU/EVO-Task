@@ -21,6 +21,7 @@ submitButton.addEventListener('click', function (e) {
 			var sha = response[0];
 			// How many times this file was uploaded
 			var fileCounter = response[1];
+			console.log(response[2]);
 			// Recording this values to page
 			document.getElementById('sha').innerHTML = `<i>SHA256 is:</i> ${sha}`;
 			document.getElementById('fileCounter').innerHTML = `<i>Was downloaded:</i>${fileCounter} times.`;

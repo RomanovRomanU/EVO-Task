@@ -10,13 +10,15 @@ db = SQLAlchemy(app)
 
 
 class Document(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    __tablename__ = 'documents'
+    id = db.Column('id', db.Integer, primary_key=True)
     # Sha will represent like hex (length = 64)
-    hex_sha = db.Column(db.String(64), unique=True)
+    hex_sha = db.Column('hex_sha', db.String(64), unique=True)
     # How many times this document was uploaded
-    count = db.Column(db.Integer)
+    count = db.Column('count', db.Integer, default=1)
 
     def __init__(self, hex_sha):
+        self.id = id
         self.hex_sha = hex_sha
         self.count = 1
 
@@ -44,7 +46,7 @@ def index():
 def download_file():
     # If there is no file dowloaded
     if 'file' not in request.files:
-        return
+        abort(400)
     file = request.files['file']
     # If the file isn`t empty and having proper filename
     if file and allowed_filename(file.filename):
@@ -54,7 +56,7 @@ def download_file():
         # Ignore means,that we pass chars,that we can`t convert
         file_repr = file_repr.encode('utf-8')
         file_hex_sha = sha256()
-        file_hex_sha.update(file_repr) 
+        file_hex_sha.update(file_repr)
         file_hex_sha = file_hex_sha.hexdigest()
         # Searching for the same document in database
         db_file = Document.query.filter_by(hex_sha=file_hex_sha).first()
@@ -62,16 +64,21 @@ def download_file():
         if db_file is None:
             new_db_file = Document(file_hex_sha)
             db.session.add(new_db_file)
+            response = str(file_hex_sha)+" "+str(new_db_file.count)
             db.session.commit()
-            return str(file_hex_sha)+" "+str(new_db_file.count)
+            response += " " + str(file_hex_sha)
+            return response
         # If we found same document
         else:
             db_file.count += 1
+            response = str(file_hex_sha)+" "+str(db_file.count)
             db.session.commit()
-            return str(file_hex_sha)+" "+str(db_file.count)
+            response += " " + str(file_hex_sha)
+            return response
     else:
         # Bad request
         abort(400)
 
 if __name__ == '__main__':
+    db.create_all()
     app.run(host='0.0.0.0', port=8080)
