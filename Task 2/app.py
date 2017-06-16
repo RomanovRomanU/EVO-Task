@@ -13,7 +13,7 @@ lock = Lock()
 class Document(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     # Sha will represent like hex (length = 64)
-    hex_sha = db.Column(db.String(64), unique=True)
+    hex_sha = db.Column(db.String(64))
     # How many times this document was uploaded
     count = db.Column(db.Integer)
 
