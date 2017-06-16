@@ -21,11 +21,10 @@ submitButton.addEventListener('click', e => {
 			const sha = response[0];
             // How many times this file was uploaded
 			const fileCounter = response[1];
-            // Now lets count MD4 hashon client side
-			cilent_crc16 = hash_crc16(file);
+            // Now lets count CRC16 hashon client side
+			hash_crc16(file);
             // Recording this values to page
 			document.getElementById('sha256').innerHTML = `<p><b>SHA256 is:</b></p> ${sha}`;
-			document.getElementById('crc16').innerHTML = `<p><b>MD4 id:</b></p> ${cilent_crc16}`;
 			document.getElementById('fileCounter').innerHTML = `<p><b>Was downloaded:</b></p>${fileCounter} times.`;
 		}
         // If our file is incorrect
@@ -39,6 +38,10 @@ submitButton.addEventListener('click', e => {
 });
 
 function hash_crc16(file) {
-	file = String(file);
-	return crc16(file);
+	reader = new FileReader();
+	reader.onload = function(e) {
+  		cilent_crc16 = crc16(reader.result);
+		document.getElementById('crc16').innerHTML = `<p><b>CRC16 id:</b></p> ${cilent_crc16}`;
+	}
+	reader.readAsBinaryString(file);
 }
